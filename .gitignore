@@ -1,0 +1,6 @@
+/target
+/build
+/public/draw
+/node_modules
+/.wrangler
+/.tools

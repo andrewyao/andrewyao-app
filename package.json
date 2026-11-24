@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "scripts": {
+    "build:draw": "scripts/build-draw.sh",
+    "dev": "scripts/build-draw.sh && wrangler dev",
+    "deploy": "scripts/build-draw.sh && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}
