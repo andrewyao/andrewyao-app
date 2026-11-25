@@ -1,16 +1,16 @@
 name = "andrewyao-app"
-main = "build/index.js"
 compatibility_date = "2026-11-01"
 routes = [{ pattern = "andrewyao.app", custom_domain = true }]
 
 [assets]
 directory = "public"
-binding = "ASSETS"
 
-[[durable_objects.bindings]]
-name = "ROOMS"
-class_name = "Room"
-
+# Rooms moved to lightdraw's own Worker, routed at andrewyao.app/draw/ws/*.
+# This deletes the old Room class here, and the rooms it stored.
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["Room"]
+
+[[migrations]]
+tag = "v2"
+deleted_classes = ["Room"]
