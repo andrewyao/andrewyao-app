@@ -6,8 +6,8 @@
     <title>lightdraw</title>
     
 <script type="module">
-import init, * as bindings from '/draw/client-96126a6f794b8f0c.js';
-const wasm = await init({ module_or_path: '/draw/client-96126a6f794b8f0c_bg.wasm' });
+import init, * as bindings from '/draw/client-d0f4f93790a09529.js';
+const wasm = await init({ module_or_path: '/draw/client-d0f4f93790a09529_bg.wasm' });
 
 
 window.wasmBindings = bindings;
@@ -38,12 +38,17 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
       .library li { padding: 4px 6px; border-radius: 3px; cursor: grab; }
       .library li:hover { background: rgba(40, 160, 200, 0.3); }
       .lab { right: 12px; }
+      .style { right: 12px; top: auto; bottom: 12px; width: 230px; }
+      .swatches { font-size: 11px; margin: 6px 0; }
+      .swatches .row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+      .swatches .swatch { width: 16px; height: 16px; padding: 0; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.25); cursor: pointer; }
+      .swatches .swatch.on { outline: 2px solid #7fd8ff; outline-offset: 1px; }
       .lab .presets { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
       .slider { display: grid; grid-template-columns: 1fr 90px 44px; align-items: center; gap: 6px; font-size: 11px; }
       .slider input { width: 90px; }
       .slider output { text-align: right; font-variant-numeric: tabular-nums; }
       .text-edit { position: absolute; box-sizing: border-box; background: rgba(0, 30, 40, 0.8); color: #dff; border: 1px solid #7ff; font: 14px system-ui, sans-serif; resize: none; outline: none; padding: 4px; }
     </style>
-  <link rel="modulepreload" href="/draw/client-96126a6f794b8f0c.js" crossorigin="anonymous" integrity="sha384-a1vHNUSfYWegvY5H418DAMGArm4OzYI75129DrUrS6/tlN//TCTlW5BM01tFp491"><link rel="preload" href="/draw/client-96126a6f794b8f0c_bg.wasm" crossorigin="anonymous" integrity="sha384-u8t4i06+EvWk182lN9JVqcG48tEKTs/hx8sRPWdfx4bocZfCjZ7QLEJeoIb7rEIg" as="fetch" type="application/wasm"></head>
+  <link rel="modulepreload" href="/draw/client-d0f4f93790a09529.js" crossorigin="anonymous" integrity="sha384-I+VlC6R5ke63O3674W7mkTQsSYDaO+afE1lqjImbBdMnJFQxWqnBCX9J74dz0Ysf"><link rel="preload" href="/draw/client-d0f4f93790a09529_bg.wasm" crossorigin="anonymous" integrity="sha384-UAc7QqCXMUwUfvgguhf9Ppyo3AIe4LoG31xSLxmSgol5K/GY1t8DUjLUipGDJoet" as="fetch" type="application/wasm"></head>
   <body></body>
 </html>
