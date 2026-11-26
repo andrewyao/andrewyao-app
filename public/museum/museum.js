@@ -134,11 +134,19 @@ function start() {
   addEventListener("keydown", (e) => {
     if (e.key === "f" && document.fullscreenEnabled && !e.metaKey && !e.ctrlKey && !e.altKey) toggleFullscreen();
     if (e.key === "Escape") backToRoom();
-    if (!focused || !["ArrowLeft", "ArrowRight"].includes(e.key)) return;
-    const i = paintings.indexOf(focused) + (e.key === "ArrowRight" ? 1 : -1);
+    if (focused && e.key === "ArrowLeft") step(-1);
+    if (focused && e.key === "ArrowRight") step(1);
+  });
+
+  // Next / previous exhibit, wrapping around the room. From the room, walk up to the first or last one.
+  function step(dir) {
+    if (!focused) return focus(paintings.at(dir > 0 ? 0 : -1).ex.id);
+    const i = paintings.indexOf(focused) + dir;
     history.replaceState({ museum: true }, "", `#${paintings[(i + paintings.length) % paintings.length].ex.id}`);
     sync();
-  });
+  }
+  document.getElementById("prev").addEventListener("click", () => step(-1));
+  document.getElementById("next").addEventListener("click", () => step(1));
 
   // Keyboard users tab through the (visually hidden) exhibit links; show which picture they're on.
   for (const p of paintings) {

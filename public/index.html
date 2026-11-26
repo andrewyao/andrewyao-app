@@ -26,6 +26,12 @@
       #fullscreen .exit, :fullscreen #fullscreen .enter { display: none; }
       :fullscreen #fullscreen .exit { display: block; }
       body:not(.room) #fullscreen { display: none; }
+      .step { position: fixed; z-index: 1; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); backdrop-filter: blur(8px); color: var(--text); cursor: pointer; }
+      .step:hover, .step:focus-visible { border-color: var(--accent); outline: none; }
+      .step svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      #prev { left: 16px; }
+      #next { right: 16px; }
+      body:not(.room) .step { display: none; }
 
       /* The exhibit list is the data the room is built from, and the page itself when there is no WebGL. */
       #exhibits { list-style: none; margin: 0; padding: 0; }
@@ -52,6 +58,12 @@
     <button id="fullscreen" type="button" aria-label="Full screen" title="Full screen (F)" hidden>
       <svg class="enter" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>
       <svg class="exit" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg>
+    </button>
+    <button id="prev" class="step" type="button" aria-label="Previous app" title="Previous app (←)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <button id="next" class="step" type="button" aria-label="Next app" title="Next app (→)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
     </button>
     <nav class="hud" aria-label="Exhibit">
       <button id="back" type="button">&larr; Back to room</button>
