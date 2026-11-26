@@ -2,9 +2,11 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "vendor": "echo \"export * from 'three';\" | esbuild --bundle --minify --format=esm --outfile=public/vendor/three.module.min.js"
   },
   "devDependencies": {
+    "three": "^0.187.0",
     "wrangler": "^4"
   }
 }

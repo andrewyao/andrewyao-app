@@ -5,217 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Andrew Yao</title>
     <style>
-      :root { color-scheme: dark; --bg: #0b1418; --card: #101d22; --line: #1e3238; --text: #cfe; --dim: #8aa8ad; --accent: #7ff; }
+      :root { color-scheme: dark; --bg: #0e0c0a; --panel: rgb(20 17 14 / .82); --line: rgb(255 240 220 / .16); --text: #f4ede2; --dim: #b9ad9c; --accent: #e8c77a; }
       * { box-sizing: border-box; }
-      body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, sans-serif; }
-      main { width: min(880px, 100% - 48px); padding: 64px 0; }
-      h1 { margin: 0 0 32px; font-size: 28px; font-weight: 600; }
-      ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 16px; }
-      a { display: grid; grid-template-columns: 40px 1fr; gap: 4px 16px; align-content: start; height: 100%; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: inherit; text-decoration: none; transition: border-color .15s, transform .15s; }
-      a:hover, a:focus-visible { border-color: var(--accent); transform: translateY(-2px); outline: none; }
-      svg { grid-row: span 3; width: 40px; height: 40px; fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-      h2 { margin: 0; font-size: 18px; font-weight: 600; }
-      p { margin: 0; color: var(--dim); }
-      small { color: var(--accent); font-size: 13px; }
-      dialog { width: min(640px, 100% - 32px); max-height: calc(100% - 32px); padding: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--card); color: var(--text); }
-      dialog:focus { outline: none; }
-      dialog > div { padding: clamp(20px, 5vw, 32px); }
-      dialog::backdrop { background: rgb(4 10 12 / .75); backdrop-filter: blur(4px); }
-      dialog header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
-      dialog h2 { font-size: 24px; }
-      dialog p { color: var(--text); margin-bottom: 16px; }
-      dialog h3 { margin: 24px 0 8px; font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
-      dialog ul { display: block; padding-left: 20px; list-style: disc; color: var(--dim); }
-      dialog li + li { margin-top: 6px; }
-      dialog nav { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
-      dialog nav a { display: inline-block; height: auto; padding: 8px 16px; border-radius: 8px; }
-      dialog nav a:first-child { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600; }
-      dialog nav a:hover { transform: none; }
-      .close { margin-left: auto; padding: 4px 10px; border: 1px solid var(--line); border-radius: 8px; background: none; color: var(--dim); font: inherit; font-size: 20px; line-height: 1; cursor: pointer; }
-      .close:hover { color: var(--text); border-color: var(--dim); }
-      @media (prefers-reduced-motion: reduce) { a { transition: none; } a:hover { transform: none; } }
+      html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, sans-serif; }
+      canvas { position: fixed; inset: 0; display: block; width: 100%; height: 100%; touch-action: none; }
+      .hud { position: fixed; z-index: 1; pointer-events: none; }
+      .hud > * { pointer-events: auto; }
+      header.hud { top: 20px; left: 24px; }
+      header h1 { margin: 0; font: 600 22px/1.2 Georgia, "Times New Roman", serif; letter-spacing: .02em; text-shadow: 0 1px 8px rgb(0 0 0 / .5); }
+      header p { margin: 2px 0 0; color: var(--dim); font-size: 14px; text-shadow: 0 1px 8px rgb(0 0 0 / .6); }
+      nav.hud { left: 50%; bottom: 24px; transform: translateX(-50%); display: flex; gap: 12px; }
+      nav button, nav a { padding: 10px 18px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); backdrop-filter: blur(8px); color: var(--text); font: inherit; font-size: 15px; text-decoration: none; cursor: pointer; white-space: nowrap; }
+      nav a { background: var(--accent); border-color: var(--accent); color: #1a140c; font-weight: 600; }
+      nav button:hover, nav button:focus-visible { border-color: var(--accent); outline: none; }
+      nav a:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+      body:not(.focused) nav.hud, body.focused header p { display: none; }
+      #fullscreen { position: fixed; z-index: 1; top: 16px; right: 16px; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); backdrop-filter: blur(8px); color: var(--text); cursor: pointer; }
+      #fullscreen:hover, #fullscreen:focus-visible { border-color: var(--accent); outline: none; }
+      #fullscreen svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      #fullscreen .exit, :fullscreen #fullscreen .enter { display: none; }
+      :fullscreen #fullscreen .exit { display: block; }
+      body:not(.room) #fullscreen { display: none; }
+
+      /* The exhibit list is the data the room is built from, and the page itself when there is no WebGL. */
+      #exhibits { list-style: none; margin: 0; padding: 0; }
+      body.room #exhibits { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+      body:not(.room) canvas, body:not(.room) .hud { display: none; }
+      body:not(.room) main { width: min(880px, 100% - 48px); margin: 0 auto; padding: 64px 0; }
+      body:not(.room) main::before { content: "Andrew Yao"; display: block; margin-bottom: 32px; font: 600 28px Georgia, serif; }
+      body:not(.room) #exhibits { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 16px; }
+      body:not(.room) #exhibits a { display: block; height: 100%; padding: 16px; border: 1px solid var(--line); border-radius: 12px; color: inherit; text-decoration: none; }
+      body:not(.room) #exhibits a:hover { border-color: var(--accent); }
+      #exhibits img { display: block; width: 100%; max-height: 220px; object-fit: cover; object-position: top; border-radius: 6px; }
+      body.room #exhibits img { display: none; }
+      #exhibits h2 { margin: 12px 0 0; font-size: 18px; }
+      #exhibits small { color: var(--accent); }
+      #exhibits p { margin: 4px 0 0; color: var(--dim); }
     </style>
+    <script type="importmap">{ "imports": { "three": "/vendor/three.module.min.js" } }</script>
   </head>
   <body>
-    <main>
+    <header class="hud">
       <h1>Andrew Yao</h1>
-      <ul>
-        <li>
-          <a href="#lightphotos">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.5"/></svg>
+      <p>Click a picture to look closer</p>
+    </header>
+    <button id="fullscreen" type="button" aria-label="Full screen" title="Full screen (F)" hidden>
+      <svg class="enter" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>
+      <svg class="exit" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg>
+    </button>
+    <nav class="hud" aria-label="Exhibit">
+      <button id="back" type="button">&larr; Back to room</button>
+      <a id="open" href="/">Open</a>
+    </nav>
+    <main>
+      <!-- Order is the walk around the room: left wall front to back, back wall, right wall back to front. -->
+      <ul id="exhibits">
+        <li id="lightphotos" data-built="June 2026" data-open="Open lightphotos.app">
+          <a href="https://lightphotos.app">
+            <img src="/museum/lightphotos.jpg" width="1280" height="800" alt="" loading="lazy" />
             <h2>lightphotos</h2>
+            <small>Built June 2026</small>
             <p>A free, open-source Lightroom alternative. Cull, rate and edit photos, including camera RAW, without your photos leaving your computer.</p>
-            <small>Read more</small>
           </a>
         </li>
-        <li>
-          <a href="#lightdraw">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
-            <h2>lightdraw</h2>
-            <p>A shared 3D whiteboard. Draw, extrude and connect shapes in 3D with others in real time, then present it as a glowing hologram.</p>
-            <small>Read more</small>
-          </a>
-        </li>
-        <li>
-          <a href="#lightandseek">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><circle cx="10.5" cy="10.5" r="2"/></svg>
-            <h2>lightandseek</h2>
-            <p>Multiplayer hide-and-seek in the browser. Share a room link, pick a map, and hide from the seeker or hunt everyone down.</p>
-            <small>Read more</small>
-          </a>
-        </li>
-        <li>
-          <a href="#lightdisks">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M12 13h9M16.5 13v7M3 10h9"/></svg>
+        <li id="lightdisks" data-built="September 2026" data-open="Source on GitHub">
+          <a href="https://github.com/andrewyao/lightdisks">
+            <img src="/museum/lightdisks.jpg" width="1280" height="852" alt="" loading="lazy" />
             <h2>lightdisks</h2>
+            <small>Built September 2026</small>
             <p>A disk usage treemap. Scan a folder and see at a glance where your disk space goes.</p>
-            <small>Read more</small>
           </a>
         </li>
-        <li>
-          <a href="#lightremote">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        <li id="lightremote" data-built="November 2026" data-open="Source on GitHub">
+          <a href="https://github.com/andrewyao/lightremote">
+            <img src="/museum/lightremote.jpg" width="600" height="1304" alt="" loading="lazy" style="object-position: center" />
             <h2>lightremote</h2>
+            <small>Built November 2026</small>
             <p>An iPhone remote for Sony cameras over Wi-Fi: live view, exposure controls, shutter and a gallery of your shots.</p>
-            <small>Read more</small>
+          </a>
+        </li>
+        <li id="lightdraw" data-built="November 2026" data-open="Open lightdraw">
+          <a href="/draw/">
+            <img src="/museum/lightdraw.jpg" width="1280" height="800" alt="" loading="lazy" />
+            <h2>lightdraw</h2>
+            <small>Built November 2026</small>
+            <p>A shared 3D whiteboard. Draw, extrude and connect shapes in 3D with others in real time, then present it as a glowing hologram.</p>
+          </a>
+        </li>
+        <li id="lightandseek" data-built="November 2026" data-open="Open lightandseek">
+          <a href="/seek/">
+            <img src="/museum/lightandseek.jpg" width="1280" height="800" alt="" loading="lazy" />
+            <h2>lightandseek</h2>
+            <small>Built November 2026</small>
+            <p>Multiplayer hide-and-seek in the browser. Share a room link, pick a map, and hide from the seeker or hunt everyone down.</p>
           </a>
         </li>
       </ul>
     </main>
-    <dialog id="lightphotos" aria-labelledby="lightphotos-title">
-      <div>
-        <header>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.5"/></svg>
-          <h2 id="lightphotos-title">lightphotos</h2>
-          <button class="close" aria-label="Close">&times;</button>
-        </header>
-        <p>A fast, Lightroom-lite photo culling and develop tool written in Rust. Open a folder to browse thumbnails, rate and filter them, then open any photo to zoom, pan and edit.</p>
-        <h3>What it does</h3>
-        <ul>
-          <li>Grid view for culling: rate, filter and move through a shoot from the keyboard.</li>
-          <li>Loupe view for editing, with zoom, pan, Auto Tone and JPEG export.</li>
-          <li>Reads JPEG, PNG, TIFF, HEIC and camera RAW files.</li>
-          <li>Ratings and edits are saved to a <code>.lightphotos</code> folder next to your photos, so the originals are never modified.</li>
-          <li>Nothing is uploaded. Your photos and edits stay on your computer.</li>
-        </ul>
-        <h3>Runs on</h3>
-        <p>macOS, Windows, Linux and the browser. HEIC and face/blink scoring are macOS-only.</p>
-        <nav>
-          <a href="https://lightphotos.app">Open lightphotos.app</a>
-          <a href="https://github.com/andrewyao/lightphotos">Source on GitHub</a>
-        </nav>
-      </div>
-    </dialog>
-    <dialog id="lightdraw" aria-labelledby="lightdraw-title">
-      <div>
-        <header>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
-          <h2 id="lightdraw-title">lightdraw</h2>
-          <button class="close" aria-label="Close">&times;</button>
-        </header>
-        <p>A multiplayer whiteboard where you build in 3D. A document is also a presentation: viewers look into a glowing hologram while the camera flies between scenes.</p>
-        <h3>What it does</h3>
-        <ul>
-          <li>Draw, move, extrude and connect shapes on a snapping 3D grid.</li>
-          <li>Every shape can hold text, and arrows connect objects.</li>
-          <li>Save a selection as a reusable component. Placed copies stay linked to the original, as in Figma.</li>
-          <li>Edit together in real time over WebSockets. Sync follows Figma’s design: last write wins per property, ordered by the server.</li>
-          <li>All Rust: a wgpu renderer compiled to WebAssembly, so large canvases stay fast.</li>
-        </ul>
-        <h3>Runs on</h3>
-        <p>Runs in the browser. Rooms are hosted on Cloudflare.</p>
-        <nav>
-          <a href="/draw/">Open lightdraw</a>
-          <a href="https://github.com/andrewyao/lightdraw">Source on GitHub</a>
-        </nav>
-      </div>
-    </dialog>
-    <dialog id="lightandseek" aria-labelledby="lightandseek-title">
-      <div>
-        <header>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><circle cx="10.5" cy="10.5" r="2"/></svg>
-          <h2 id="lightandseek-title">lightandseek</h2>
-          <button class="close" aria-label="Close">&times;</button>
-        </header>
-        <p>A multiplayer hide-and-seek game. Everyone joins a room by its link. Hiders scatter while the seeker waits blind, then the seeker hunts until the clock runs out.</p>
-        <h3>What it does</h3>
-        <ul>
-          <li>Three maps: a park, a city and a furnished house.</li>
-          <li>The seeker is a little faster, and catches a hider by getting close while facing them with a clear line of sight.</li>
-          <li>Up to 8 players per room, and bots can fill the seeker or hider spots.</li>
-          <li>The host sets the rules in the lobby. Reload mid-round and you rejoin where you were.</li>
-          <li>All Rust: a wgpu renderer on WebGPU or WebGL2, with client-side prediction so movement feels instant.</li>
-        </ul>
-        <h3>Runs on</h3>
-        <p>Runs in the browser. Rooms are hosted on Cloudflare.</p>
-        <nav>
-          <a href="/seek/">Open lightandseek</a>
-          <a href="https://github.com/andrewyao/lightandseek">Source on GitHub</a>
-        </nav>
-      </div>
-    </dialog>
-    <dialog id="lightdisks" aria-labelledby="lightdisks-title">
-      <div>
-        <header>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M12 13h9M16.5 13v7M3 10h9"/></svg>
-          <h2 id="lightdisks-title">lightdisks</h2>
-          <button class="close" aria-label="Close">&times;</button>
-        </header>
-        <p>A desktop app that shows where your disk space goes. Pick a folder and lightdisks scans it, then draws everything inside as a shaded treemap where each tile’s area is its size.</p>
-        <h3>What it does</h3>
-        <ul>
-          <li>Cushion-shaded treemap, colored by top-level folder, so nested folders read at a glance.</li>
-          <li>Click to zoom into a folder and navigate back out.</li>
-          <li>A sidebar lists the largest folders, with a legend of file types by size.</li>
-          <li>Hide a folder to see the rest more clearly, and restore it later.</li>
-          <li>Move files and folders to the Trash from inside the app.</li>
-        </ul>
-        <h3>Runs on</h3>
-        <p>Desktop app written in Rust (egui).</p>
-        <nav>
-          <a href="https://github.com/andrewyao/lightdisks">Source on GitHub</a>
-        </nav>
-      </div>
-    </dialog>
-    <dialog id="lightremote" aria-labelledby="lightremote-title">
-      <div>
-        <header>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>
-          <h2 id="lightremote-title">lightremote</h2>
-          <button class="close" aria-label="Close">&times;</button>
-        </header>
-        <p>An iPhone remote for Sony cameras over Wi-Fi, built for the A7II. It shows live view and controls exposure, shoots, and keeps a GPS track so your photos can be geotagged later.</p>
-        <h3>What it does</h3>
-        <ul>
-          <li>Live view with a histogram, focus peaking and a zoom loupe.</li>
-          <li>Exposure controls, plus back-button autofocus that holds while you press.</li>
-          <li>Shooting modes: single, self-timer, interval, bulb and movie.</li>
-          <li>A gallery of preview shots that you can save to Photos.</li>
-          <li>Records a GPS track, with a Live Activity on the Lock Screen. A Mac helper uses it to geotag the full-size RAW and JPEG files.</li>
-        </ul>
-        <h3>Runs on</h3>
-        <p>iPhone app written in Swift and SwiftUI.</p>
-        <nav>
-          <a href="https://github.com/andrewyao/lightremote">Source on GitHub</a>
-        </nav>
-      </div>
-    </dialog>
-    <script>
-      const sync = () => {
-        document.querySelectorAll("dialog[open]").forEach((d) => d.close());
-        const d = location.hash && document.getElementById(location.hash.slice(1));
-        if (d instanceof HTMLDialogElement) d.showModal();
-      };
-      document.querySelectorAll("dialog").forEach((d) => {
-        d.addEventListener("close", () => {
-          if (location.hash === "#" + d.id) history.replaceState(null, "", location.pathname + location.search);
-        });
-        d.addEventListener("click", (e) => {
-          if (e.target === d || e.target.closest(".close")) d.close();
-        });
-      });
-      addEventListener("hashchange", sync);
-      sync();
-    </script>
+    <script type="module" src="/museum/museum.js"></script>
   </body>
 </html>
