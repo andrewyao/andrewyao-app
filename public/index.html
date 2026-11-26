@@ -57,6 +57,14 @@
           </a>
         </li>
         <li>
+          <a href="#lightandseek">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><circle cx="10.5" cy="10.5" r="2"/></svg>
+            <h2>lightandseek</h2>
+            <p>Multiplayer hide-and-seek in the browser. Share a room link, pick a map, and hide from the seeker or hunt everyone down.</p>
+            <small>Read more</small>
+          </a>
+        </li>
+        <li>
           <a href="#lightdisks">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M12 13h9M16.5 13v7M3 10h9"/></svg>
             <h2>lightdisks</h2>
@@ -119,6 +127,30 @@
         <nav>
           <a href="/draw/">Open lightdraw</a>
           <a href="https://github.com/andrewyao/lightdraw">Source on GitHub</a>
+        </nav>
+      </div>
+    </dialog>
+    <dialog id="lightandseek" aria-labelledby="lightandseek-title">
+      <div>
+        <header>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><circle cx="10.5" cy="10.5" r="2"/></svg>
+          <h2 id="lightandseek-title">lightandseek</h2>
+          <button class="close" aria-label="Close">&times;</button>
+        </header>
+        <p>A multiplayer hide-and-seek game. Everyone joins a room by its link. Hiders scatter while the seeker waits blind, then the seeker hunts until the clock runs out.</p>
+        <h3>What it does</h3>
+        <ul>
+          <li>Three maps: a park, a city and a furnished house.</li>
+          <li>The seeker is a little faster, and catches a hider by getting close while facing them with a clear line of sight.</li>
+          <li>Up to 8 players per room, and bots can fill the seeker or hider spots.</li>
+          <li>The host sets the rules in the lobby. Reload mid-round and you rejoin where you were.</li>
+          <li>All Rust: a wgpu renderer on WebGPU or WebGL2, with client-side prediction so movement feels instant.</li>
+        </ul>
+        <h3>Runs on</h3>
+        <p>Runs in the browser. Rooms are hosted on Cloudflare.</p>
+        <nav>
+          <a href="/seek/">Open lightandseek</a>
+          <a href="https://github.com/andrewyao/lightandseek">Source on GitHub</a>
         </nav>
       </div>
     </dialog>
