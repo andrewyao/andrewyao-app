@@ -6,8 +6,8 @@
     <title>lightandseek</title>
     
 <script type="module">
-import init, * as bindings from '/seek/client-cff09646feab5cf3.js';
-const wasm = await init({ module_or_path: '/seek/client-cff09646feab5cf3_bg.wasm' });
+import init, * as bindings from '/seek/client-e1596499e0f987a8.js';
+const wasm = await init({ module_or_path: '/seek/client-e1596499e0f987a8_bg.wasm' });
 
 
 window.wasmBindings = bindings;
@@ -56,6 +56,6 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
       .status { position: absolute; right: 10px; bottom: 8px; font-size: 11px; opacity: 0.5; }
       .results h1 { font-size: 28px; }
     </style>
-  <link rel="modulepreload" href="/seek/client-cff09646feab5cf3.js" crossorigin="anonymous" integrity="sha384-NEaJ+x/CLm09aARls0uxH1h87q1yHP7TrfUB3ZuyEz/XS1ZNhI2LdZX3ipJsznHP"><link rel="preload" href="/seek/client-cff09646feab5cf3_bg.wasm" crossorigin="anonymous" integrity="sha384-AjBYULQSOR+SJ3g0UakGmOoFTlKAqSLMeso33agr2YaLHpw2cgA6lgA1UsIBmeth" as="fetch" type="application/wasm"></head>
+  <link rel="modulepreload" href="/seek/client-e1596499e0f987a8.js" crossorigin="anonymous" integrity="sha384-NEaJ+x/CLm09aARls0uxH1h87q1yHP7TrfUB3ZuyEz/XS1ZNhI2LdZX3ipJsznHP"><link rel="preload" href="/seek/client-e1596499e0f987a8_bg.wasm" crossorigin="anonymous" integrity="sha384-qb4msCx3LeR5QiSoEcjGWQVBp2NxHHcmAe2AnoehQCLCXHGXafkOuLgbobdS5EVv" as="fetch" type="application/wasm"></head>
   <body></body>
 </html>
