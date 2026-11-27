@@ -10,7 +10,8 @@ const half = ROOM.w / 2;
 const SLOTS = [
   { x: -half, z: -1, ry: Math.PI / 2 },
   { x: -half, z: -8, ry: Math.PI / 2 },
-  { x: -1, z: ROOM.back, ry: 0 },
+  { x: -2.83, z: ROOM.back, ry: 0 },
+  { x: 2.26, z: ROOM.back, ry: 0 },
   { x: half, z: -11, ry: -Math.PI / 2 },
   { x: half, z: -4, ry: -Math.PI / 2 },
 ];
